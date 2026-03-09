@@ -2,8 +2,7 @@
 <?php include('../includes/mysqli_connect.php'); ?>
 <?php include('../includes/sidebar-admin.php'); ?>
 
-<div id="content">
-            <h2>Create a category</h2>
+
 <?php
         if($_SERVER['REQUEST_METHOD'] == 'POST') {
             // Gia tri tri ton tai, xu ly form
@@ -12,7 +11,7 @@
             if(empty($_POST['category'])) {
                 $errors[] = "category";
             } else {
-                $cat_name = $_POST['category'];
+                $cat_name = mysqli_real_escape_string($dbc, strip_tags($_POST['category']));
             }
             // Check position ton` tai,  so nguyen , >= 1;
 
@@ -33,21 +32,24 @@
                 $q = "INSERT INTO categories (user_id, cat_name, position) VALUES (1,'$cat_name',$position)"; 
             $r = mysqli_query($dbc, $q) or die("Query ($q) \n<br/> MYSQL Error: " . mysqli_error($dbc));
                 if(mysqli_affected_rows($dbc) == 1)  {
-                echo "<p> The category was added successfully.</p>";
+                $messages = "<p class='success'> The category was added successfully.</p>";
                 } else {
-                echo "<p>Could not added to the database due to a system error.</p>";
+                $messages = "<p class='warning'>Could not added to the database due to a system error.</p>";
                 }
             } else {
-                echo "Please fill all the required fields";
+                $messages = "<p class='warning'>Please fill all the required fields</p>";
             }
        
         } // END main IF submit condition
 ?>
+<div id="content">
+    <h2>Create a category</h2>
+        <?php if(!empty($messages)) {echo $messages;} ?>
             <form action="" method="post" id="add_cat">
                 <fieldset>
                     <legend>Add category</legend>
                     <div>
-                        <label value="<?php if(isset($_POST['category'])) echo $_POST['category']; ?>" for="category">Category Name: <span class="required">*</span>
+                        <label for="category">Category Name: <span class="required">*</span>
                     <?php 
                     if(isset($errors) && in_array('category', $errors)) {
                         echo "<p class='warning'> Please fill in the category name</p>";
@@ -56,7 +58,7 @@
                     
                     
                     </label>
-                        <input type="text" name="category" id ="category" value="" size="20" maxlength ="150" tabindex ="1" />
+                        <input type="text" name="category" id ="category" value="<?php if(isset($_POST['category'])) echo strip_tags($_POST['category']); ?>"  size="20" maxlength ="150" tabindex ="1" />
                     </div>
                     <div>
                         <label for="position">Position: <span class="required">*</span>
@@ -68,7 +70,19 @@
                     
                     </label>
                         <select name="position" tabindex ="2">
-                            <option value="0"> Option</option>
+                            <?php 
+                            $q ="SELECT count(cat_id) AS count FROM categories";
+                            $r = mysqli_query($dbc,$q) or die("Query ($q) \n<br/> MYSQL Error: " . mysqli_error($dbc));
+                            if(mysqli_num_rows($r) == 1) {
+                                list($num) = mysqli_fetch_array($r, MYSQLI_NUM);
+                                for ($i =1; $i <= $num + 1; $i++) {  // tao vong for de ra option, cong them 1 gia tri cho position
+                                    echo "<option value='{$i}'";
+                                    if(isset($_POST['position']) && $_POST['position'] == $i) echo "selected = 'selected' ";
+   
+                                    echo ">".$i."</option>";
+                                }
+                            }
+                                ?>
                         </select>
                     </div>
                 </fieldset>
