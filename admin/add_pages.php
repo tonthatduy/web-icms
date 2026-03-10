@@ -60,7 +60,7 @@
                     }
                     ?>
                     </label>
-                        <input type="text" name="page_name" id="page_name" value="" size="20" maxlength="80" tabindex="1" />
+                        <input type="text" name="page_name" id="page_name" value="<?php if(isset($_POST['page_name'])) echo strip_tags($_POST['page_name']); ?>" size="20" maxlength="80" tabindex="1" />
                     </div>
 
                     <div>
@@ -74,6 +74,17 @@
 
                         <select name="category" id="">
                             <option value="">Select Category</option>
+                            <?php
+                            $q = "SELECT cat_id, cat_name FROM categories ORDER BY position ASC";
+                            $r = mysqli_query($dbc,$q);
+                            if(mysqli_num_rows($r) > 0) {
+                                while($cats = mysqli_fetch_array($r, MYSQLI_NUM)) {
+                                    echo "<option value='{$cats[0]}'";
+                                        if(isset($_POST['category']) && ($_POST['category'] == $cats[0])) echo "selected = 'selected' ";
+                                    echo ">".$cats[1]."</option>";
+                                }
+                            }
+                            ?>
                         </select>
                     </div>
 
@@ -86,7 +97,19 @@
                     ?>
                     </label>
                         <select name="position" id="">
-                            <option value="">Select position</option>
+                             <?php 
+                            $q ="SELECT count(page_id) AS count FROM pages";
+                            $r = mysqli_query($dbc,$q) or die("Query ($q) \n<br/> MYSQL Error: " . mysqli_error($dbc));
+                            if(mysqli_num_rows($r) == 1) {
+                                list($num) = mysqli_fetch_array($r, MYSQLI_NUM);
+                                for ($i =1; $i <= $num + 1; $i++) {  // tao vong for de ra option, cong them 1 gia tri cho position
+                                    echo "<option value='{$i}'";
+                                    if(isset($_POST['position']) && $_POST['position'] == $i) echo "selected = 'selected' ";
+   
+                                    echo ">".$i."</option>";
+                                }
+                            }
+                                ?>
                         </select>
                     </div>
 
@@ -98,7 +121,9 @@
                     }
                     ?>
                     </label>
-                        <textarea name="content" cols="50" rows="20" ></textarea>
+                        <textarea name="content" cols="50" rows="20" ><?php 
+                            if(isset($_POST['content'])) echo htmlspecialchars($_POST['content']);
+                            ?></textarea>
                     </div>
                 </fieldset>
                 <p><input type="submit" name="submit" value="Add Page"></p>

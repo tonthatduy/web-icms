@@ -1,14 +1,22 @@
 <?php include('../includes/header.php'); ?>
 <?php include('../includes/mysqli_connect.php'); ?>
 <?php include('../includes/sidebar-admin.php'); ?>
+<?php include('../includes/functions.php'); ?>
 
 
 
 <?php
+    // Xac nhan bien Get ton tai va thuoc loai du lieu cho phep
+    if(isset($_GET['cid']) && filter_var($_GET['cid'], FILTER_VALIDATE_INT,  array('options' => array('min_range' => 1)))) {
+        $cid = $_GET['cid'];
+    } else {
+        redirect_to('admin/admin.php');
+    }
+
         if($_SERVER['REQUEST_METHOD'] == 'POST') {
             // Gia tri tri ton tai, xu ly form
             $errors = [];
-            
+            // Kiem tra ten cua category
             if(empty($_POST['category'])) {
                 $errors[] = "category";
             } else {
@@ -16,26 +24,23 @@
             }
             // Check position ton` tai,  so nguyen , >= 1;
 
+            // Kiem tra position cua category
             $position = filter_input(INPUT_POST, 'position', FILTER_VALIDATE_INT, ["options" => ["min_range" => 1]]);
 
             if($position === false) {
                 $errors[] =  "position";
             }
 
-            // if(isset($_POST['position']) && filter_var($_POST['position'], FILTER_VALIDATE_INT, array('min_range' => 1))){
-            //     $position = $_POST['position'];
-            // } else {
-            //     $errors[] =  "position";
-            // }
-
             if(empty($errors)) {
                 // Neu khong co loi xay ra thi chen du lieu vao
-                $q = "INSERT INTO categories (user_id, cat_name, position) VALUES (1,'$cat_name',$position)"; 
-            $r = mysqli_query($dbc, $q) or die("Query ($q) \n<br/> MYSQL Error: " . mysqli_error($dbc));
+                $q = "UPDATE categories SET cat_name = '$cat_name', position = $position WHERE cat_id = {$cid} LIMIT 1 "; 
+            $r = mysqli_query($dbc, $q);
+            confirm_query($r,$q);
+
                 if(mysqli_affected_rows($dbc) == 1)  {
-                $messages = "<p class='success'> The category was added successfully.</p>";
+                $messages = "<p class='success'> The category was edited successfully.</p>";
                 } else {
-                $messages = "<p class='warning'>Could not added to the database due to a system error.</p>";
+                $messages = "<p class='warning'>Could not edit the category due to a system error.</p>";
                 }
             } else {
                 $messages = "<p class='warning'>Please fill all the required fields</p>";
@@ -44,11 +49,24 @@
         } // END main IF submit condition
 ?>
 <div id="content">
-    <h2>Create a category</h2>
+    <?php 
+    $q = "SELECT cat_name, position FROM categories WHERE cat_id = {$cid}";
+    $r = mysqli_query($dbc, $q);
+    confirm_query($r,$q);
+    if(mysqli_num_rows($r) == 1) {
+        // Neu category ton tai trong database, dua vao CID, xuat du lieu ra ngoai trinh duyet
+        list($cat_name, $position) = mysqli_fetch_array($r, MYSQLI_NUM);
+    } else {
+        // Neu CID khong hop le se khong the hien thi category
+        $messages = "<p class='warning'>The category does not exist.</p>";
+    }
+    ?>
+
+    <h2>Edit category <?php if(isset($cat_name)) echo $cat_name; ?></h2>
         <?php if(!empty($messages)) {echo $messages;} ?>
-            <form action="" method="post" id="add_cat">
+            <form action="" method="post" id="edit_cat">
                 <fieldset>
-                    <legend>Add category</legend>
+                    <legend>Edit category</legend>
                     <div>
                         <label for="category">Category Name: <span class="required">*</span>
                     <?php 
@@ -59,7 +77,7 @@
                     
                     
                     </label>
-                        <input type="text" name="category" id ="category" value="<?php if(isset($_POST['category'])) echo strip_tags($_POST['category']); ?>"  size="20" maxlength ="150" tabindex ="1" />
+                        <input type="text" name="category" id ="category" value="<?php if(isset($cat_name)) echo $cat_name; ?>"  size="20" maxlength ="150" tabindex ="1" />
                     </div>
                     <div>
                         <label for="position">Position: <span class="required">*</span>
@@ -78,7 +96,7 @@
                                 list($num) = mysqli_fetch_array($r, MYSQLI_NUM);
                                 for ($i =1; $i <= $num + 1; $i++) {  // tao vong for de ra option, cong them 1 gia tri cho position
                                     echo "<option value='{$i}'";
-                                    if(isset($_POST['position']) && $_POST['position'] == $i) echo "selected = 'selected' ";
+                                    if(isset($position) && ($position== $i)) echo "selected = 'selected' ";
    
                                     echo ">".$i."</option>";
                                 }
@@ -87,7 +105,7 @@
                         </select>
                     </div>
                 </fieldset>
-                <p><input type="submit" name="submit" value="Add Category"></p>
+                <p><input type="submit" name="submit" value="Edit Category"></p>
             </form>
           
 </div>
