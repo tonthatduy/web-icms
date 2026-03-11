@@ -4,6 +4,44 @@
 <?php include('includes/sidebar-a.php'); ?>
 
 <div id="content">
+    <?php 
+     // Kiểm tra cid hợp lệ
+    if (isset($_GET['cid']) && filter_var($_GET['cid'], FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]])) {
+    
+        $cid = (int) $_GET['cid'];
+
+        $stmt = mysqli_prepare($dbc, 
+            "SELECT p.page_name, p.page_id, 
+            LEFT(p.content, 400) AS content, 
+            DATE_FORMAT(p.post_on, '%b, %d, %Y') AS date, 
+            CONCAT_WS(' ', u.first_name, u.last_name) AS name, u.user_id 
+            FROM pages AS p 
+            INNER JOIN users AS u 
+            USING (user_id) 
+            WHERE p.cat_id = ? 
+            ORDER BY date ASC LIMIT 0, 10");
+
+        mysqli_stmt_bind_param($stmt,"i", $cid);
+        mysqli_stmt_execute($stmt);
+        $resust = mysqli_stmt_get_result($stmt);
+
+        if(mysqli_num_rows($resust) > 0) {
+        // Neu co post de hien thi ra trnh duyet.
+        while($pages = mysqli_fetch_assoc($resust)) {
+            echo "
+                <div class='post'> 
+                    <h2><a href='single.php?pid={$pages['page_id']}'>{$pages['page_name']}</a></h2>
+                    <p>".the_excrept($pages['content'])." ... <a href='single.php?pid={$pages['page_id']}'>Read more</a></p>
+                    <p class='meta'><strong>Posted By: </strong>{$pages['name']} | <strong>On: </strong> {$pages['date']}</p>
+                </div>
+            ";
+        } // End While Loop
+        } else {
+        echo "<p>Thre are currenlty no post in this category.</p>";
+        }
+        mysqli_stmt_close($stmt);
+    }
+    ?>
             <h2>Welcome To izCMS</h2>
             <div>
                 <p>

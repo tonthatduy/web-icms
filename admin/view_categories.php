@@ -60,7 +60,7 @@
                         <td>{$cats['position']}</td>
                         <td>{$cats['name']}</td>
                         <td><a href='edit_category.php?cid={$cats['cat_id']}' class='edit'>Edit</a></td>
-                        <td><a href='delete_category.php?cid={$cats['cat_id']}' class='delete'>Delete</a></td>
+                        <td><a href='delete_category.php?cid={$cats['cat_id']}&cat_name={$cats['cat_name']}' class='delete'>Delete</a></td>
                     </tr>
                  ";
                 }
@@ -70,5 +70,5 @@
     </table>
 </div> <!--End content -->
 
-<?php include('../includes/sidebar-b.php'); ?>
+
 <?php include('../includes/footer.php'); ?>

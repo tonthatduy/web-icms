@@ -1,5 +1,6 @@
 <?php include('../includes/header.php'); ?>
 <?php include('../includes/mysqli_connect.php'); ?>
+<?php include('../includes/functions.php'); ?>
 <?php include('../includes/sidebar-admin.php'); ?>
 
 <?php
@@ -33,7 +34,8 @@
                 // Nếu không có lỗi xảy ra, bắt đầu chèn dữ liệu vào cở sở dữ liệu
                 $q = "INSERT INTO pages (user_id, cat_id,page_name, content, position, post_on) 
                         VALUES (1, {$cat_id},'$page_name', '$content', $position, NOW())";
-                $r = mysqli_query($dbc, $q) or die("Query ($q) \n<br/> MYSQL Error: " . mysqli_error($dbc));
+                $r = mysqli_query($dbc, $q);
+                confirm_query($r,$q);
                 if(mysqli_affected_rows($dbc) == 1) {
                     $messages = "<p class='success'>The apge was added successfully.</p>";
                 } else {
@@ -131,6 +133,5 @@
           
 </div> <!--end content -->
 
-<?php include('../includes/sidebar-b.php'); ?>
 <?php include('../includes/footer.php'); ?>
 

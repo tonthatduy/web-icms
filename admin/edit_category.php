@@ -1,7 +1,8 @@
-<?php include('../includes/header.php'); ?>
-<?php include('../includes/mysqli_connect.php'); ?>
-<?php include('../includes/sidebar-admin.php'); ?>
 <?php include('../includes/functions.php'); ?>
+<?php include('../includes/mysqli_connect.php'); ?>
+<?php include('../includes/header.php'); ?>
+<?php include('../includes/sidebar-admin.php'); ?>
+
 
 
 
@@ -33,9 +34,10 @@
 
             if(empty($errors)) {
                 // Neu khong co loi xay ra thi chen du lieu vao
-                $q = "UPDATE categories SET cat_name = '$cat_name', position = $position WHERE cat_id = {$cid} LIMIT 1 "; 
-            $r = mysqli_query($dbc, $q);
-            confirm_query($r,$q);
+                $stmt = mysqli_prepare($dbc, "UPDATE categories SET cat_name = ?, position = ? WHERE cat_id = ? LIMIT 1 ");
+                        mysqli_stmt_bind_param($stmt,"sii",$cat_name,$position,$cid);
+            $r = mysqli_stmt_execute($stmt);
+            confirm_query($r,$stmt);
 
                 if(mysqli_affected_rows($dbc) == 1)  {
                 $messages = "<p class='success'> The category was edited successfully.</p>";
