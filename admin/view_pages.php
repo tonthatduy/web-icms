@@ -66,7 +66,7 @@
                         <td>{$pages['page_name']}</td>
                         <td>{$pages['date']}</td>
                         <td>{$pages['name']}</td>
-                        <td>{$pages['content']}</td>
+                        <td>".the_excrept($pages['content'])."</td>
                         <td><a href='edit_page.php?pid={$pages['page_id']}' class='edit'>Edit</a></td>
                         <td><a href='delete_page.php?pid={$pages['page_id']}&pn={$pages['page_name']}' class='delete'>Delete</a></td>
                     </tr>

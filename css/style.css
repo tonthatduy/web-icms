@@ -219,6 +219,11 @@ input[type="submit"] {
     padding: 5px;
 }
 
+.website {
+    display: none;
+    visibility: hidden  ;
+}
+
 /****** COMMENT SECTION *********/
 #disscuss {
     margin: 20px 15px;

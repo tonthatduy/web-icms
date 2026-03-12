@@ -37,12 +37,14 @@
         echo "
             <div class='post'> 
                 <h2>{$post['page_name']}</h2>
-                <p>{$post['content']}</p>
+                <p>".the_content($post['content'])."</p>
                 <p class='meta'><strong>Posted By: </strong><a href='author.php?aid={$post['aid']}'>{$post['author']}</a> | <strong>On: </strong> {$post['post_on']}</p>
             </div>
         ";
     } // End Foreach
-    ?>         
+    ?>
+    
+   <?php include('includes/comment_form.php'); ?>
 </div>
 
 <?php 

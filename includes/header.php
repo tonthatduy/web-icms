@@ -1,4 +1,8 @@
-<!doctype html>
+<?php
+session_start();
+?>
+
+<!Doctype html>
 <html lang="en">
     <head>
         <meta charset="UTF-8" />

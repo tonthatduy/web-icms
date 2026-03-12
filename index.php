@@ -11,8 +11,7 @@
         $cid = (int) $_GET['cid'];
 
         $stmt = mysqli_prepare($dbc, 
-            "SELECT p.page_name, p.page_id, 
-            LEFT(p.content, 400) AS content, 
+            "SELECT p.page_name, p.page_id, p.content, 
             DATE_FORMAT(p.post_on, '%b, %d, %Y') AS date, 
             CONCAT_WS(' ', u.first_name, u.last_name) AS name, u.user_id 
             FROM pages AS p 

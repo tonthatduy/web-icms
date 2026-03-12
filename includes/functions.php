@@ -9,15 +9,24 @@
         }
     }
 
+    // Tái định hướng người dùng về trang mặc định là index
     function redirect_to($page = 'index.php') {
         $url = BASE_URL . $page;    
     header ("Location: $url");
         exit();
     }
 
+    // Cắt chữ để hiển thị thành đoạn văn ngắn
     function the_excrept($text) {
-        return substr($text,0,strrpos($text,' '));
-    }
+        $sanitized = htmlentities($text, ENT_COMPAT, 'UTF-8');
+        if(strlen($sanitized) > 400) {
+            $cutString = substr($sanitized, 0, 400);
+            $words = substr($sanitized, 0, strrpos($cutString, ' '));
+            return $words;
+        } else {
+            return $sanitized;
+        }
+    } // End the Excrept
 
     function validate_id($id) {
         if (isset($id) && filter_var($id, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]])) {
@@ -44,6 +53,29 @@
         $result = mysqli_stmt_get_result($stmt);
         mysqli_stmt_close($stmt);
         return $result;
-
+    
     }
+
+    //tao paragraph tu CSDL
+    function the_content($text) {
+        $sanitized = htmlentities($text, ENT_COMPAT, 'UTF-8');
+       return str_replace(array("\r\n", "\n"), array("<p>","</p>"),$sanitized);
+    }
+
+    // Question Captcha
+    function captcha() {
+        $qna = [
+            1 => array('question' => 'Mot cong mot', 'answer' => 2),
+            2 => array('question' => 'ba tru hai', 'answer' => 1),
+            3 => array('question' => 'ba nhan nam', 'answer' => 15),
+            4 => array('question' => 'sau chia hai', 'answer' => 3),
+            5 => array('question' => 'nang bach tuyet va .... chu lun', 'answer' => 7),
+            6 => array('question' => 'Alibaba va ... ten cuop', 'answer' => 40),
+            7 => array('question' => 'an mot qua khe, tra ... cuc vang', 'answer' => 1),
+            8 => array('question' => 'may tui ... gang, mang di ma dung', 'answer' => 3)
+        ];
+        $rand_key = array_rand($qna); // Lay ngau nhien mot trong cac array
+        $_SESSION['q'] = $qna[$rand_key];
+        return $question = $qna[$rand_key]['question'];
+    } // End Function Captcha
 ?>
