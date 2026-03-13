@@ -14,14 +14,14 @@ session_start();
         <div id="container">
             <div id="header">
                 <h1>
-                    <a href="">izCMS</a>
+                    <a href="index.php">izCMS</a>
                 </h1>
                 <p class="slogan">THE iz Content Management System</p>
             </div>
             <div id="navigation">
                 <ul>
                     <li>
-                        <a href="#">Home</a>
+                        <a href="index.php">Home</a>
                     </li>
                     <li>
                         <a href="#">About</a>
@@ -30,7 +30,7 @@ session_start();
                         <a href="#">Services</a>
                     </li>
                     <li>
-                        <a href="#">Contact us</a>
+                        <a href="contact.php">Contact us</a>
                     </li>
                 </ul>
 

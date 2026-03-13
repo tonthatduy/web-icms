@@ -22,16 +22,16 @@
 
         mysqli_stmt_bind_param($stmt,"i", $cid);
         mysqli_stmt_execute($stmt);
-        $resust = mysqli_stmt_get_result($stmt);
+        $result = mysqli_stmt_get_result($stmt);
 
-        if(mysqli_num_rows($resust) > 0) {
+        if(mysqli_num_rows($result) > 0) {
         // Neu co post de hien thi ra trnh duyet.
-        while($pages = mysqli_fetch_assoc($resust)) {
+        while($pages = mysqli_fetch_assoc($result)) {
             echo "
                 <div class='post'> 
                     <h2><a href='single.php?pid={$pages['page_id']}'>{$pages['page_name']}</a></h2>
                     <p>".the_excrept($pages['content'])." ... <a href='single.php?pid={$pages['page_id']}'>Read more</a></p>
-                    <p class='meta'><strong>Posted By: </strong>{$pages['name']} | <strong>On: </strong> {$pages['date']}</p>
+                    <p class='meta'><strong>Posted By: </strong><a href='author.php?aid={$pages['user_id']}'>{$pages['name']}</a> | <strong>On: </strong> {$pages['date']}</p>
                 </div>
             ";
         } // End While Loop
@@ -39,9 +39,51 @@
         echo "<p>Thre are currenlty no post in this category.</p>";
         }
         mysqli_stmt_close($stmt);
-    }
+    } else if (isset($_GET['pid']) && filter_var($_GET['pid'], FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]])) {
+
+        $pid = (int) $_GET['pid'];
+
+        $stmt = mysqli_prepare($dbc, 
+                                "SELECT p.page_name, p.content, DATE_FORMAT(p.post_on, '%b, %d, %y') AS date, CONCAT_WS(' ', u.first_name, u.last_name) AS name, u.user_id, COUNT(c.comment_id) AS count \n"
+
+                                . "FROM users AS u\n"
+
+                                . "INNER JOIN pages AS p\n"
+
+                                . "USING(user_id)\n"
+
+                                . "LEFT JOIN comments AS c \n"
+
+                                . "ON p.page_id = c.page_id\n"
+
+                                . "WHERE p.page_id = ?\n"
+
+                                . "GROUP BY p.page_name\n"
+
+                                . "ORDER BY date ASC");
+        mysqli_stmt_bind_param($stmt,"i",$pid);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+        if(mysqli_num_rows($result) > 0) {
+            // Neu co ket qua tra ve, hien thi ra trinh duyet
+            while($pages = mysqli_fetch_assoc($result)) {
+                echo "
+                    <div class='post'> 
+                        <h2><a href='single.php?pid=$pid'>{$pages['page_name']}</a></h2>
+                        <p class='comments'><a href='single.php?pid=$pid#disscuss'>{$pages['count']}</a></p>
+                        <p>".the_excrept($pages['content'])." ... <a href='single.php?pid=$pid'>Read more</a></p>
+                        <p class='meta'><strong>Posted By: </strong><a href='author.php?aid={$pages['user_id']}'>{$pages['name']} </a> | <strong>On: </strong> {$pages['date']}</p>
+                    </div>
+            ";
+            } // End While
+        } else {
+            // New khong co ket qua, hoac ID khong ton tai hoac khong hop le
+            echo "<p class='warning'>The article you are viewing is not avaible</p>";
+        }
+
+    } else {
     ?>
-            <h2>Welcome To izCMS</h2>
+        <h2>Welcome To izCMS</h2>
             <div>
                 <p>
                     Lorem ipsum dolor sit amet, consectetur adipisicing elit.
@@ -85,6 +127,7 @@
                     ullam, repellat voluptatibus placeat, veniam minus.
                 </p>
             </div>
+            <?php } ?>
 </div>
 
 <?php include('includes/sidebar-b.php'); ?>

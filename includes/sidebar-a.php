@@ -33,7 +33,7 @@
                   
                   // Lay pages tu csdl
                   while($pages = mysqli_fetch_array($r1, MYSQLI_ASSOC)) {
-                    echo "<li><a href ='single.php?pid={$pages['page_id']}'";
+                    echo "<li><a href ='index.php?pid={$pages['page_id']}'";
                     if($pages['page_id'] == $pid) echo "class='selected'"; 
                     echo ">".$pages['page_name']."</a></li>";
                   } // End WHILE pages
