@@ -30,7 +30,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     if(!empty($_POST['url'])) {
         redirect_to('thankyou.html');
-        exit;
+        
     }
 
     if(!empty($_POST['question'])) {

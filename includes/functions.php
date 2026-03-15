@@ -129,4 +129,17 @@
 
         return $output;
     } // End pagination
+
+    //
+    function clean_email($value) {
+        $suspects = ['to:', 'bcc', 'cc','content-type:','mime-version:','multipart-mixed:','content-transfer-endcoding:'];
+        foreach($suspects as $s) {
+           if(strpos($value, $s) !== FALSE) {
+                return '';
+           }
+           // Trả về giá trị cho dấu xuống hàng
+           $value = str_replace(['\n', '\r', '$0a', '$0d'], '', $value);
+           return trim($value);
+        }
+    }
 ?>
