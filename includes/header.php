@@ -34,5 +34,5 @@ session_start();
                     </li>
                 </ul>
 
-                <p class="greeting">Xin chào bạn hiền</p>
+                <p class="greeting">Xin chào <?php echo (isset($_SESSION['first_name']) ? $_SESSION['first_name'] : "bạn hiền!") ?></p>
             </div>

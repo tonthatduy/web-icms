@@ -31,7 +31,7 @@
             if(empty($errors)) {
                 // bat dau truy van CSDL de lay thong tin nguoi dung
                     // Dùng prepared statement
-                $stmt = mysqli_prepare($dbc, "SELECT user_id, first_name, pass FROM users WHERE email = ? AND active IS NULL LIMIT 1");
+                $stmt = mysqli_prepare($dbc, "SELECT user_id, first_name, pass, user_level FROM users WHERE email = ? AND active IS NULL LIMIT 1");
                 mysqli_stmt_bind_param($stmt, "s", $e);
                 mysqli_stmt_execute($stmt);
                 $result = mysqli_stmt_get_result($stmt);
@@ -41,10 +41,10 @@
                     $user = mysqli_fetch_assoc($result);
                       // So sánh password
                     if(password_verify($p, $user['pass'])) {
-                            // Bắt đầu session
-                    session_start();
+                    // Bắt đầu session
                     $_SESSION['user_id'] = $user['user_id'];
                     $_SESSION['first_name'] = $user['first_name'];
+                    $_SESSION['user_level'] = $user['user_level'];
 
                     redirect_to();
                     } else {

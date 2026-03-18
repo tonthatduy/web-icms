@@ -9,6 +9,13 @@
         }
     }
 
+    // Kiểm tra xem người dùng đã đăng nhập hay chưa
+    function is_logged_in() {
+        if(!isset($_SESSION['user_id'])) {
+            redirect_to('login.php');
+        }
+    } // End is Loggin
+
     // Tái định hướng người dùng về trang mặc định là index
     function redirect_to($page = 'index.php') {
         $url = BASE_URL . $page;    
