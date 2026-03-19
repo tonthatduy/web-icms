@@ -61,7 +61,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
 ?>
 <?php
 // Hien thi comment tu csdl
-   $stmt = mysqli_prepare($dbc, "SELECT c.author, c.comment, DATE_FORMAT(c.comment_date, '%b %d %y') AS date 
+   $stmt = mysqli_prepare($dbc, "SELECT c.comment_id, c.author, c.comment, DATE_FORMAT(c.comment_date, '%b %d %y') AS date 
                               FROM comments AS c 
                               WHERE page_id = ?");
         mysqli_stmt_bind_param($stmt,"i",$pid);
@@ -71,11 +71,12 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
 if(mysqli_num_rows($result) > 0 ) {
     // Neu co comment de hien thi ra trinh duyet
     echo "<ol id ='disscuss'>";
-    while(list($author,$comment,$date) = mysqli_fetch_array($result, MYSQLI_NUM)) {
+    while(list($cmt_id,$author,$comment,$date) = mysqli_fetch_array($result, MYSQLI_NUM)) {
         echo "<li class='comment-wrap'>
                 <p class='author'>{$author}</p>
-                <p class='comment-sec'>{$comment}</p>
-                <p class='date'>{$date}</p>
+                <p class='comment-sec'>{$comment}</p>";
+            if(is_admin()) echo "<a id='{$cmt_id}' class='remove'>Delete</a>";
+        echo    "<p class='date'>{$date}</p>
             </li>";
     } //End While
     echo "</ol>";
@@ -115,7 +116,7 @@ if(mysqli_num_rows($result) > 0 ) {
             }
             ?> 
             </label>
-            <div id="comment"><textarea name="comment" rows="10" cols="50" tabindex="3"><?php if(isset($_POST['comment'])) {echo htmlentities($_POST['comment']);} ?></textarea> </div>
+            <div id="comment"><textarea id="editor" name="comment" rows="10" cols="50" tabindex="3"><?php if(isset($_POST['comment'])) {echo htmlentities($_POST['comment']);} ?></textarea> </div>
         </div>
 
         <div>

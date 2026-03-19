@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // --- 2a. Validate định dạng mật khẩu hiện tại ---
     if (empty($cur_password)) {
-        $errors[] = 'Vui lòng nhập mật khẩu hiện tại.';
+        $errors[] = 'Vui lòng nhập mật khẩu hiện tại.'; 
     } else if (!preg_match('/^\w{4,20}$/', $cur_password)) {
         $errors[] = 'Mật khẩu hiện tại không đúng định dạng (4–20 ký tự).';
     } else {
@@ -84,13 +84,7 @@ include('includes/sidebar-a.php');
         </div>
     <?php else: ?>
 
-        <?php if (!empty($errors)): ?>
-            <div class="error" role="alert">
-                <?php foreach ($errors as $error): ?>
-                    <p class="error"><?= htmlspecialchars($error) ?></p>
-                <?php endforeach; ?>
-            </div>
-        <?php endif; ?>
+        <?php  report_error($errors) ?>
 
         <form action="" method="post" novalidate>
             <fieldset>

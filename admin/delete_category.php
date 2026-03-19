@@ -4,6 +4,7 @@
 <?php include('../includes/sidebar-admin.php'); ?>
 <div id ="content">
     <?php 
+    admin_access();
     if(isset($_GET['cid'], $_GET['cat_name']) && filter_var($_GET['cid'], FILTER_VALIDATE_INT,  array('options' => array('min_range' => 1)))) {
         $cid = $_GET['cid'];
         $cat_name = $_GET['cat_name'];

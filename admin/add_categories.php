@@ -1,10 +1,12 @@
 <?php include('../includes/header.php'); ?>
 <?php include('../includes/mysqli_connect.php'); ?>
+<?php include('../includes/functions.php'); ?>
 <?php include('../includes/sidebar-admin.php'); ?>
 
 
 
 <?php
+        admin_access();
         if($_SERVER['REQUEST_METHOD'] == 'POST') {
             // Gia tri tri ton tai, xu ly form
             $errors = [];

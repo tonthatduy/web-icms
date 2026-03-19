@@ -46,5 +46,18 @@
 </div>
 </div>
 </div>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script type='text/javascript' src=/icms/js/check_ajax.js></script> 
+<script type='text/javascript' src=/icms/js/delete_comment.js></script>
+<script src="/icms/js/tinymce/js/tinymce/tinymce.min.js"></script>
+<script>
+tinymce.init({
+  selector: '#editor',
+  height: 300,
+  plugins: 'lists link image table code',
+  license_key: 'gpl',
+  toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | bullist numlist | code'
+});
+</script>
 </body>
 </html>

@@ -1,0 +1,5 @@
+# Tắt chức năng hiển thị thư mục
+Options All -Indexes
+
+# Không cho phép hiển thị thư mục.
+IndexIgnore *

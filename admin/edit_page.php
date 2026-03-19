@@ -5,6 +5,8 @@ include('../includes/mysqli_connect.php');
 include('../includes/header.php');
 include('../includes/sidebar-admin.php');
 
+admin_access();
+
 $messages = '';
 $errors = [];
 $page = [];

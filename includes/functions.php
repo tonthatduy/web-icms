@@ -23,6 +23,17 @@
         exit();
     }
 
+    // Hàm này để thông báo lỗi
+    function report_error($msg) {
+        if(!empty($msg)) {
+            echo '<div class="error" role="alert">';
+            foreach($msg as $m) {
+                echo '<p class="error">' . htmlspecialchars($m) . '</p>';
+            }
+            echo '</div>';
+        }
+    } // ENE report error
+
     // Cắt chữ để hiển thị thành đoạn văn ngắn
     function the_excrept($text) {
         $sanitized = htmlentities($text, ENT_COMPAT, 'UTF-8');
@@ -67,6 +78,18 @@
     function the_content($text) {
         $sanitized = htmlentities($text, ENT_COMPAT, 'UTF-8');
        return str_replace(array("\r\n", "\n"), array("<p>","</p>"),$sanitized);
+    }
+
+    // Hàm tạo ra để kiểm tra xem có phải là admin hay không
+    function is_admin() {
+        return isset($_SESSION['user_level']) && ($_SESSION['user_level'] == 2);
+    }
+
+    // Kiểm tra xem người dùng có thể vào trang admin hay không
+    function admin_access() {
+        if(!is_admin()) {
+            redirect_to();
+        }
     }
 
     // Question Captcha
@@ -137,7 +160,7 @@
         return $output;
     } // End pagination
 
-    //
+    // Hàm để chống spam email
     function clean_email($value) {
         $suspects = ['to:', 'bcc', 'cc','content-type:','mime-version:','multipart-mixed:','content-transfer-endcoding:'];
         foreach($suspects as $s) {
@@ -149,4 +172,34 @@
            return trim($value);
         }
     }
+
+    function view_counter($pg_id) {
+        $ip = $_SERVER['REMOTE_ADDR'];
+        global $dbc;
+
+         //Truy vấn CSDL điều xem page view
+         $stmt = mysqli_prepare($dbc, "SELECT num_views,user_ip FROM page_views WHERE page_id = ?");
+                mysqli_stmt_bind_param($stmt,"i",$pg_id);
+                mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+
+        if(mysqli_num_rows($result) > 0) {
+            //Nếu kết quả trả về, có nghĩa là đã tồn tại trong table, Update page view
+            list($num_views,$db_ip) = mysqli_fetch_array($result,MYSQLI_NUM);
+
+            // So sánh IP trong  CSDL và IP của người dùng, nếu khác nhau thì sẽ update CSDL
+            if($db_ip !== $ip) {
+            $stmt = mysqli_prepare($dbc,"UPDATE page_views SET num_views = (num_views + 1) WHERE page_id = ? LIMIT 1");
+                    mysqli_stmt_bind_param($stmt,"i",$pg_id);
+                    mysqli_stmt_execute($stmt);
+            }   
+        } else {
+            // Nếu không có kết quả trả về thì sẽ inser vào table
+            $stmt = mysqli_prepare($dbc, "INSERT INTO page_views (page_id,num_views,user_ip) VALUES (?,1,?)");
+                    mysqli_stmt_bind_param($stmt,"is",$pg_id,$ip);
+                    mysqli_stmt_execute($stmt);
+            $num_views = 1;
+        }
+        return $num_views;
+    }// ENd view counter
 ?>

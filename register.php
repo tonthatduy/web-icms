@@ -106,7 +106,8 @@
                 <label for="Email">Email<span class="required">*</span>
                     <?php if(isset($errors) && in_array('email',$errors)) echo "<span class='warning'>Please enter your email</span>" ?>
                 </label>
-                <input type="text" name="email" size="20" maxlength="80" value="<?php if(isset($_POST['email'])) echo htmlentities($_POST['email'], ENT_COMPAT, 'UTF-8'); ?>" tabindex="3">
+                <input type="text" name="email" id="email" size="20" maxlength="80" value="<?php if(isset($_POST['email'])) echo htmlentities($_POST['email'], ENT_COMPAT, 'UTF-8'); ?>" tabindex="3">
+                <span id="available"></span>
             </div>
 
             <div>

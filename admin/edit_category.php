@@ -7,6 +7,7 @@
 
 
 <?php
+    admin_access();
     // Xac nhan bien Get ton tai va thuoc loai du lieu cho phep
     if(isset($_GET['cid']) && filter_var($_GET['cid'], FILTER_VALIDATE_INT,  array('options' => array('min_range' => 1)))) {
         $cid = $_GET['cid'];

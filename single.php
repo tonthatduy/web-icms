@@ -6,6 +6,7 @@
     if($pid = validate_id($_GET['pid'])) {
         // Neu PID hop le thi tien hanh try van csdl
         $result = get_page_by_id($dbc,$pid);
+        $page_views = view_counter($pid);
         $posts = []; // Tao mot array trong de luu gia tri vao su dung sau nay cho phan noi dung
        
         if(mysqli_num_rows($result) > 0) {
@@ -38,7 +39,10 @@
             <div class='post'> 
                 <h2>{$post['page_name']}</h2>
                 <p>".the_content($post['content'])."</p>
-                <p class='meta'><strong>Posted By: </strong><a href='author.php?aid={$post['aid']}'>{$post['author']}</a> | <strong>On: </strong> {$post['post_on']}</p>
+                <p class='meta'><strong>Posted By: </strong><a href='author.php?aid={$post['aid']}'>{$post['author']}</a> | 
+                <strong>On: </strong> {$post['post_on']}
+                <strong>Page views: </strong> {$page_views}
+                </p>
             </div>
         ";
     } // End Foreach

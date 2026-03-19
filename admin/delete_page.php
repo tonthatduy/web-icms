@@ -4,6 +4,7 @@
 <?php include('../includes/sidebar-admin.php'); ?>
 <div id ="content">
     <?php 
+    admin_access();
     if(isset($_GET['pid'], $_GET['pn']) && filter_var($_GET['pid'], FILTER_VALIDATE_INT,  array('options' => array('min_range' => 1)))) {
         $pid = $_GET['pid'];
         $page_name = $_GET['pn'];

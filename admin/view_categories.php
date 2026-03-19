@@ -22,6 +22,7 @@
         </thead>
         <tbody>
             <?php
+            admin_access();
             // Sap xep theo thu tu cua table head
             if(isset($_GET['sort'])) {
                 switch ($_GET['sort']) {

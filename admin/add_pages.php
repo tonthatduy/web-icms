@@ -4,6 +4,7 @@
 <?php include('../includes/sidebar-admin.php'); ?>
 
 <?php
+        admin_access();
         if($_SERVER['REQUEST_METHOD'] == 'POST') { // Gia tri ton tai, xu ly form
            $errors = [];
            if(empty($_POST['page_name'])) {
@@ -123,7 +124,7 @@
                     }
                     ?>
                     </label>
-                        <textarea name="content" cols="50" rows="20" ><?php 
+                        <textarea id="editor" name="content" cols="50" rows="20" ><?php 
                             if(isset($_POST['content'])) echo htmlspecialchars($_POST['content']);
                             ?></textarea>
                     </div>
