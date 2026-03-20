@@ -23,6 +23,7 @@ a {
 a:hover {
     color: #649805;
 }
+
 h2 a,
 h2 {
     margin: 0;
@@ -221,7 +222,7 @@ input[type="submit"] {
 
 .website {
     display: none;
-    visibility: hidden  ;
+    visibility: hidden;
 }
 
 /****** COMMENT SECTION *********/
