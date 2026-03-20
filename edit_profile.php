@@ -5,6 +5,59 @@
     //Kiểm tra xem người dùng đã login chưa?
     is_logged_in() 
 ?>
+<?php
+if($_SERVER['REQUEST_METHOD'] == 'POST') {
+
+    $errors = array();
+    $trimmed = array_map('trim', $_POST);
+
+    if(preg_match('/^[a-zA-Z\s]{2,50}$/', $trimmed['first_name'])) {
+        $fn = $trimmed['first_name'];
+    } else {
+        $errors[] = "first_name";
+    }
+
+    if(preg_match('/^[a-zA-Z\s]{2,50}$/', $trimmed['last_name'])) {
+        $ln = $trimmed['last_name'];
+    } else {
+        $errors[] = "last_name";
+    }
+
+    if(filter_var($trimmed['email'], FILTER_VALIDATE_EMAIL)) {
+        $e = $trimmed['email'];
+    } else {
+        $errors[] = "email";
+    }
+
+    $web = (!empty($trimmed['website']) && filter_var($trimmed['website'], FILTER_VALIDATE_URL)) 
+            ? $trimmed['website'] : NULL;
+
+    $yahoo = (!empty($trimmed['yahoo'])) ? $trimmed['yahoo'] : NULL;
+    $bio = (!empty($trimmed['bio'])) ? $trimmed['bio'] : NULL;
+
+    if(empty($errors)) {
+
+        $q = "UPDATE users SET
+                first_name = ?, last_name = ?, email = ?, website = ?, yahoo = ?, bio = ?
+              WHERE user_id = ?
+              LIMIT 1";
+
+        $stmt = mysqli_prepare($dbc, $q);
+
+        mysqli_stmt_bind_param($stmt, 'ssssssi', 
+            $fn, $ln, $e, $web, $yahoo, $bio, $_SESSION['user_id']
+        );
+
+        if(mysqli_stmt_execute($stmt)) {
+            $message = "<p class='success'>Your profile has been updated successfully.</p>";
+        } else {
+            $errors[] = "<p class='error'>System error, please try again.</p>";
+        }
+    }
+}
+// END $_SERVER IF
+
+?>
 
 
 <div id="content">
@@ -12,14 +65,14 @@
 <h2>User Profile</h2>
     <?php 
         // Truy xuat csdl de hien thi thong tin nguoi dung
-        // $user = fetch_user($_SESSION['uid']);
+        $user = fetch_user($_SESSION['user_id']);
     ?>
 
 <form enctype="multipart/form-data" action="processor/avatar.php" method="post"> 
     <fieldset>
 		<legend>Avatar</legend>
 		<div>
-            <img class="avatar" src="uploads/images/<?php echo (is_null($user['avatar']) ? "no_avatar.jpg" : $user['avatar']); ?>" alt="avatar" />
+            <img class="avatar" src="<?php echo (is_null($user['avatar']) ? "uploads/images/no_avatar.jpg" : $user['avatar']); ?>" alt="avatar" />
             <p>Please select a JPEG or PNG image of 512Kb or smaller to use as avatar<p>
             </label> 
             <input type="hidden" name="MAX_FILE_SIZE" value="524288" />
@@ -29,7 +82,7 @@
   </fieldset> 
 </form>
 
-<!-- <form action="" method="post">        
+<form action="" method="post">        
     <fieldset>
         <legend>User Info</legend>
         <div>
@@ -72,7 +125,7 @@
         </div>
   </fieldset>   
  <div><input type="submit" name="submit" value="Save Changes" /></div>
-</form> -->
+</form>
 </div><!--end content-->
 
 <?php include('includes/sidebar-b.php'); ?>

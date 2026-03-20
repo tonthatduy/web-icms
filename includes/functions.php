@@ -202,4 +202,79 @@
         }
         return $num_views;
     }// ENd view counter
+
+    //Ham dung de truy xuat du lieu cua ng dung
+    function fetch_user($user_id) {
+        global $dbc;
+        $stmt = mysqli_prepare($dbc,"SELECT * FROM users WHERE user_id = ?");
+            if(!$stmt) {
+                return false;
+            }
+                mysqli_stmt_bind_param($stmt,"i",$user_id);
+                mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+
+        if(mysqli_num_rows($result) > 0) {
+            //Neu co ket qua tra ve
+            return mysqli_fetch_array($result, MYSQLI_ASSOC);
+        } else {
+            //Neu khong co ket qua tra ve
+            return FALSE;
+        
+        }
+    }
+
+    function fetch_users($order) {
+        global $dbc;
+
+        // Truy van CSDL de lay tat ca thong tin nguoi dung
+        $q = "SELECT * FROM users ORDER BY {$order} ASC";
+        $r = mysqli_query($dbc,$q);
+        confirm_query($r,$q);
+        if(mysqli_num_rows($r) > 1) {
+            //Tao ra array de luu lai ket qua
+            $users = [];
+            // Neu co gia tri de tra ve
+            while($results = mysqli_fetch_array($r,MYSQLI_ASSOC)) {
+                $users[] = $results;
+            } // END WHILE
+            return $users;
+        } else {
+            return FALSE; // Neu khong co thong tin nguoi dung trong CSDL
+        }
+    } // END fetch Users
+
+    // Hàm để sắp xếp thứ tự của bảng USERS
+    function sort_table_users($order) {
+        switch($order) {
+            case 'fn':
+            $order_by = "first_name";
+            break;
+
+            case 'ln':
+            $order_by = "last_name";
+            break;
+
+            case 'e':
+            $order_by = "email";
+            break;
+
+            case 'ul':
+            $order_by = "user_level";
+            break;
+            
+            default:
+            $order_by = "first_name";
+            break;
+        }
+        return $order_by;
+    } // END Sort_table
+    
+    // Check connection for OOP
+    function check_db_conn() {
+        if(mysqli_connect_errno()) {
+            echo "Connection failed: " .mysqli_connect_error();
+            exit();
+        }
+    }
 ?>
