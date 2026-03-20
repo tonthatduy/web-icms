@@ -277,4 +277,10 @@
             exit();
         }
     }
+
+    function current_page($page) {
+         if(basename($_SERVER['SCRIPT_NAME']) == $page) {
+            echo "class='here'";
+         }       
+    }
 ?>

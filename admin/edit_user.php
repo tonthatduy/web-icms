@@ -93,7 +93,8 @@
 ?>
     <?php 
         // Truy xuat csdl de hien thi thong tin nguoi dung
-        if($user = fetch_user($uid)) { // Neu user ton tai, thi hien thi noi dung cua user
+        if($user = fetch_user($uid)) { 
+            // Neu user ton tai, thi hien thi noi dung cua user
     ?>
 
 <div id="content">

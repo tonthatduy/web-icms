@@ -75,7 +75,7 @@
                             $upd_stmt->bind_param('sssii', $fn, $ln, $e, $ul, $uid);
 
                             // Cho chay cau lenh
-                            // $upd_stmt->execute() or die("Mysqli Error: $query ". $upd_stmt->error());
+                            $upd_stmt->execute() or die("Mysqli Error: $query ". $upd_stmt->error);
 
                             if($upd_stmt->affected_rows == 1) {
                                 $message = "<p class='success'>User info updated successfully.</p>";
